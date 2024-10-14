@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from config import Config
 from models import db, BlacklistEmail
-from app import app
+from application import application
 import uuid
 import re
 
@@ -27,7 +27,7 @@ def is_valid_uuid(uuid_to_test, version=4):
     except ValueError:
         return False
 
-@app.route('/blacklists', methods=['POST'], endpoint='add_to_blacklist_endpoint')
+@application.route('/blacklists', methods=['POST'], endpoint='add_to_blacklist_endpoint')
 @token_required
 def add_to_blacklist():
     data = request.get_json()
@@ -67,7 +67,7 @@ def add_to_blacklist():
     return jsonify({'message': f'Email {email} added to blacklist'}), 201
 
 
-@app.route('/blacklists/<string:email>', methods=['GET'], endpoint='check_blacklist_endpoint')
+@application.route('/blacklists/<string:email>', methods=['GET'], endpoint='check_blacklist_endpoint')
 @token_required
 def check_blacklist(email):
     entry = BlacklistEmail.query.filter_by(email=email).first()
