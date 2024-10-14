@@ -3,6 +3,14 @@ from config import Config
 from models import db, BlacklistEmail
 from app import app
 import uuid
+import re
+
+# Expresión para validar emails
+EMAIL_REGEX = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+
+def is_valid_email(email):
+    #Verifica si el email tiene un formato válido.
+    return re.match(EMAIL_REGEX, email) is not None
 
 def token_required(f):
     def decorated(*args, **kwargs):
@@ -29,6 +37,10 @@ def add_to_blacklist():
     
     if not email or not app_uuid:
         return jsonify({'message': 'Email and app_uuid are required!'}), 400
+    
+    # Verificar si el email tiene un formato válido
+    if not is_valid_email(email):
+        return jsonify({"error": "Email no válido"}), 400
     
     # Validación del UUID
     if not is_valid_uuid(app_uuid):
