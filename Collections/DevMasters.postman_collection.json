@@ -1,0 +1,146 @@
+{
+	"info": {
+		"_postman_id": "1c8f5c9f-1ea9-4439-98be-75d754f4c658",
+		"name": "DevMasters",
+		"description": "La colección `blacklist_email` almacena correos electrónicos bloqueados en una aplicación, con un identificador único (`id`), el correo (`email`), el ID de la aplicación (`app_uuid`), el motivo del bloqueo (`blocked_reason`), la IP relacionada (`ip_address`), y la fecha de creación (`created_at`). Permite gestionar y auditar bloqueos de usuarios por motivos de seguridad o comportamiento no deseado.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26687890",
+		"_collection_link": "https://sw-nube-uniandes.postman.co/workspace/9e79979c-48c3-4714-9c06-f0b574b1b968/collection/26687890-1c8f5c9f-1ea9-4439-98be-75d754f4c658?action=share&source=collection_link&creator=26687890"
+	},
+	"item": [
+		{
+			"name": "Añadir email a la blacklist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Prueba para verificar que el código de estado es 201 (Creado)",
+							"pm.test(\"Response status code is 201\", function () {",
+							"  pm.expect(pm.response.code).to.equal(201);",
+							"});",
+							"",
+							"// Prueba para verificar que la respuesta tiene los campos requeridos (message)",
+							"pm.test(\"Response has the required fields\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.message).to.exist.and.to.be.a('string');",
+							"});",
+							"",
+							"// Prueba para asegurar que el mensaje no es una cadena vacía",
+							"pm.test(\"Message is a non-empty string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+							"});",
+							"",
+							"// Prueba para verificar que el encabezado Content-Type es application/json",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"// Prueba para asegurar que el tiempo de respuesta sea menor de 500ms (puedes ajustar este valor según las necesidades)",
+							"pm.test(\"Response time is less than 500ms\", function () {",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);",
+							"});",
+							"",
+							"// Prueba para verificar que el mensaje confirma que el email fue añadido a la blacklist",
+							"pm.test(\"Confirmation message includes email added to blacklist\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.message).to.include(\"Email\").and.to.include(\"added to blacklist\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "my_static_token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"andres@hotmail.com\",\n    \"app_uuid\": \"86aed986-4ef1-462c-a155-a939f132ca36\",\n    \"blocked_reason\": \"spam\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://proyectodevmasters1-env.eba-e6hfzttu.us-east-1.elasticbeanstalk.com/blacklists",
+					"protocol": "http",
+					"host": [
+						"proyectodevmasters1-env",
+						"eba-e6hfzttu",
+						"us-east-1",
+						"elasticbeanstalk",
+						"com"
+					],
+					"path": [
+						"blacklists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check email",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "my_static_token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://proyectodevmasters1-env.eba-e6hfzttu.us-east-1.elasticbeanstalk.com/blacklists/andres@gmail.com",
+					"protocol": "http",
+					"host": [
+						"proyectodevmasters1-env",
+						"eba-e6hfzttu",
+						"us-east-1",
+						"elasticbeanstalk",
+						"com"
+					],
+					"path": [
+						"blacklists",
+						"andres@gmail.com"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
