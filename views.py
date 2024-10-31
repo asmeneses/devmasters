@@ -83,3 +83,8 @@ def check_blacklist(email):
             'message': 'Email not in blacklist'
         }), 404
 
+
+@application.route('/ping', methods=['GET'], endpoint='ping_endpoint')
+def ping():
+    return jsonify({'message': 'Service is running!'}), 200
+
