@@ -1,9 +1,44 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      python: 3.12
+    commands:
+      - echo "Installing dependencies"
+      - pip install -r requirements.txt
+
   pre_build:
     commands:
-      - pip install -r requirements.txt
+      - docker-compose up -d
+      - sleep 10
+      - echo "Running tests"
+      - python -m unittest tests_app.py
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 495599755529.dkr.ecr.us-east-1.amazonaws.com
+
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t python app .
+      - docker tag python:latest 495599755529.dkr.ecr.us-east-1.amazonaws.com/python:latest
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push 495599755529.dkr.ecr.us-east-1.amazonaws.com/python:latest
+      - echo Writing Image Definitions file...
+      - printf '[{"name":"python-app","imageUri":"495599755529.dkr.ecr.us-east-1.amazonaws.com/python:latest"}]' > imagedefinitions.json
+      - printf '{"ImageURI":"495599755529.dkr.ecr.us-east-1.amazonaws.com/python:latest"}' > imageDetail.json
+      - mv imagedefinitions.json ../imagedefinitions.json
+      - mv imageDetail.json ../imageDetail.json
+      - cat ../imagedefinitions.json
+
 artifacts:
   files:
     - '**/*'
+    - '../imagedefinitions.json'
+    - '../imageDetail.json'
+
