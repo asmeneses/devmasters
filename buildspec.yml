@@ -16,8 +16,6 @@ phases:
       - python -m unittest test_app.py
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 495599755529.dkr.ecr.us-east-1.amazonaws.com
-      - echo "Verifying ECR login..."
-      - docker info | grep -i "login" || exit 1
       - echo "Verifying ECR repositories..."
       - aws ecr describe-repositories --region us-east-1 || { echo "Failed to describe ECR repositories"; exit 1; }
       - docker-compose down
