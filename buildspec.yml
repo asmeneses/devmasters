@@ -16,6 +16,7 @@ phases:
       - python -m unittest test_app.py
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 495599755529.dkr.ecr.us-east-1.amazonaws.com
+      - docker-compose down
 
   build:
     commands:
