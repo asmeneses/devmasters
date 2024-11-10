@@ -5,7 +5,7 @@
             "TargetService": {
                 "Type": "AWS::ECS::Service",
                 "Properties": {
-                    "TaskDefinition": "<TASK_DEFINITION>",
+                    "TaskDefinition": "arn:aws:ecs:us-east-1:495599755529:task-definition/Task-app-flask:1",
                     "LoadBalancerInfo": {
                         "ContainerName": "container-app-flask",
                         "ContainerPort": 5000
