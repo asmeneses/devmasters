@@ -36,8 +36,8 @@ phases:
       - printf '{"ImageURI":"495599755529.dkr.ecr.us-east-1.amazonaws.com/python:latest"}' > imageDetail.json
       - mv imagedefinitions.json ../imagedefinitions.json
       - mv imageDetail.json ../imageDetail.json
-      - cp appspec.json ../appspec.json
-      - cp taskdef.json ../taskdef.json
+      - mv appspec.json ../appspec.json
+      - mv taskdef.json ../taskdef.json
       - cat ../imagedefinitions.json
 
 artifacts:
