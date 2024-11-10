@@ -34,12 +34,14 @@ phases:
       - echo Writing Image Definitions file...
       - printf '[{"name":"python-app","imageUri":"495599755529.dkr.ecr.us-east-1.amazonaws.com/python:latest"}]' > imagedefinitions.json
       - printf '{"ImageURI":"495599755529.dkr.ecr.us-east-1.amazonaws.com/python:latest"}' > imageDetail.json
+      - mv imagedefinitions.json ../imagedefinitions.json
+      - mv imageDetail.json ../imageDetail.json
       - cat imagedefinitions.json
 
 artifacts:
   files:
     - '**/*'
-    - imagedefinitions.json
+    - imagedefinitions.json 
     - imageDetail.json
   secondary-artifacts:
     DefinitionArtifact:
