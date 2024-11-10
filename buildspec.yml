@@ -27,18 +27,19 @@ phases:
       - docker tag flask_app:latest 495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest
 
   post_build:
-  commands:
-    - echo "Build completed on `date`"
-    - echo "Pushing the Docker image..."
-    - docker push 495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest
-    - echo Writing Image Definitions file...
-    - printf '[{"name":"python-app","imageUri":"495599755529.dkr.ecr.us-east-1.amazonaws.com/python:latest"}]' > imagedefinitions.json
-    - printf '{"ImageURI":"495599755529.dkr.ecr.us-east-1.amazonaws.com/python:latest"}' > imageDetail.json
-    - cat imagedefinitions.json
+    commands:
+      - echo "Build completed on `date`"
+      - echo "Pushing the Docker image..."
+      - docker push 495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest
+      - echo Writing Image Definitions file...
+      - printf '[{"name":"python-app","imageUri":"495599755529.dkr.ecr.us-east-1.amazonaws.com/python:latest"}]' > imagedefinitions.json
+      - printf '{"ImageURI":"495599755529.dkr.ecr.us-east-1.amazonaws.com/python:latest"}' > imageDetail.json
+      - cat imagedefinitions.json
+
 artifacts:
   files:
     - '**/*'
-    - imagedefinitions.json
+    - imagedefinitions.json 
     - imageDetail.json
   secondary-artifacts:
     DefinitionArtifact:
@@ -48,6 +49,5 @@ artifacts:
     ImageArtifact:
       files:
         - imageDetail.json
-
 
 
