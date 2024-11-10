@@ -20,5 +20,5 @@
     "networkMode": "awsvpc",
     "cpu": "512",
     "memory": "1024",
-    "family": "Task-app-python"
+    "family": "Task-app-flask"
   }
