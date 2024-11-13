@@ -42,7 +42,7 @@ artifacts:
     - imagedefinitions.json
     - imageDetail.json
     - appspec.json
-    - taskdef.json
+    - taskdef.yml
   secondary-artifacts:
     DefinitionArtifact:
       files:
