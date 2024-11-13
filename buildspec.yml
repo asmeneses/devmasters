@@ -7,7 +7,7 @@ phases:
     commands:
       - echo "Installing dependencies"
       - pip install -r requirements.txt
-
+  
   pre_build:
     commands:
       - docker-compose up -d
@@ -19,35 +19,35 @@ phases:
       - echo "Verifying ECR repositories..."
       - aws ecr describe-repositories --region us-east-1 || { echo "Failed to describe ECR repositories"; exit 1; }
       - docker-compose down
+  
   build:
     commands:
       - echo "Build started on `date`"
       - echo "Building the Docker image..."
       - docker build -t flask_app .
       - docker tag flask_app:latest 495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest
-
+  
   post_build:
     commands:
       - echo "Build completed on `date`"
       - echo "Pushing the Docker image..."
       - docker push 495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest
-      - echo Writing Image Definitions file...
-      - printf '[{"name":"python-app","imageUri":"495599755529.dkr.ecr.us-east-1.amazonaws.com/python:latest"}]' > imagedefinitions.json
-      - printf '{"ImageURI":"495599755529.dkr.ecr.us-east-1.amazonaws.com/python:latest"}' > imageDetail.json
-      - mv imagedefinitions.json ../imagedefinitions.json
-      - mv imageDetail.json ../imageDetail.json
-      - cat ../imagedefinitions.json
+      - echo "Writing image definitions file..."
+      - printf '[{"name":"container-app-flask","imageUri":"%s"}]' "495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest" > imagedefinitions.json
+      - printf '{"ImageURI":"%s"}' "495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest" > imageDetail.json
+      - cat imagedefinitions.json
 
 artifacts:
   files:
-    - '**/*'
-    - '../imagedefinitions.json'
-    - '../imageDetail.json'
+    - imagedefinitions.json
+    - imageDetail.json
+    - appspec.json
+    - taskdef.json
   secondary-artifacts:
     DefinitionArtifact:
       files:
-        - '../appspec.json'
-        - '../taskdef.json'
+        - appspec.json
+        - taskdef.json
     ImageArtifact:
       files:
-        - '../imageDetail.json'
+        - imageDetail.json
