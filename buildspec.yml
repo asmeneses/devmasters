@@ -33,8 +33,8 @@ phases:
       - echo "Pushing the Docker image..."
       - docker push 495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest
       - echo "Writing image definitions file..."
-      - printf ‘[{“name”:“container-app-flask”,“imageUri”:“%s”}]’ “495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest” > imagedefinitions.json
-      - printf ‘{“ImageURI”:“%s”}’ “495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest” > imageDetail.json
+      - printf ‘[{“name”:“container-app-flask”,“imageUri”:“495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest”}]’ > imagedefinitions.json
+      - printf ‘{“ImageURI”:“495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest”}’ > imageDetail.json
       - cat imagedefinitions.json
 
 artifacts:
