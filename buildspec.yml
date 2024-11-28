@@ -1,5 +1,10 @@
 version: 0.2
 
+env:
+  variables:
+    AWS_REGION: "us-east-1"
+    ECR_REPOSITORY: "495599755529.dkr.ecr.${AWS_REGION}.amazonaws.com"
+
 phases:
   install:
     runtime-versions:
@@ -7,7 +12,7 @@ phases:
     commands:
       - echo "Installing dependencies"
       - pip install -r requirements.txt
-  
+
   pre_build:
     commands:
       - docker-compose up -d
@@ -15,27 +20,26 @@ phases:
       - echo "Running tests"
       - python -m unittest test_app.py
       - echo "Logging in to Amazon ECR..."
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 495599755529.dkr.ecr.us-east-1.amazonaws.com
-      - echo "Verifying ECR repositories..."
-      - aws ecr describe-repositories --region us-east-1 || { echo "Failed to describe ECR repositories"; exit 1; }
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPOSITORY
+      - echo "Verifying ECR repository..."
+      - aws ecr describe-repositories --repository-names flask_app --region $AWS_REGION || aws ecr create-repository --repository-name flask_app --region $AWS_REGION
       - docker-compose down
-  
+
   build:
     commands:
       - echo "Build started on `date`"
-      - echo "Building the Docker image..."
       - docker build -t flask_app .
-      - docker tag flask_app:latest 495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest
-  
+      - docker tag flask_app:latest $ECR_REPOSITORY/flask_app:latest
+
   post_build:
     commands:
       - echo "Build completed on `date`"
-      - echo "Pushing the Docker image..."
-      - docker push 495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest
-      - echo "Writing image definitions file..."
-      - printf '[{"name":"container-app-flask","imageUri":"%s"}]' "495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest" > imagedefinitions.json
-      - printf '{"ImageURI":"%s"}' "495599755529.dkr.ecr.us-east-1.amazonaws.com/flask_app:latest" > imageDetail.json
+      - docker push $ECR_REPOSITORY/flask_app:latest
+      - printf '[{"name":"container-app-flask","imageUri":"%s"}]' "$ECR_REPOSITORY/flask_app:latest" > imagedefinitions.json
+      - printf '{"ImageURI":"%s"}' "$ECR_REPOSITORY/flask_app:latest" > imageDetail.json
       - cat imagedefinitions.json
+      - docker image prune -f
+      - docker container prune -f
 
 artifacts:
   files:
@@ -51,5 +55,6 @@ artifacts:
     ImageArtifact:
       files:
         - imageDetail.json
+
 
 
