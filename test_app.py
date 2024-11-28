@@ -37,7 +37,7 @@ class TestBlacklistEndpoints(unittest.TestCase):
 
         # Verificar el código de estado y la respuesta
         print(response.data)
-        self.assertEqual(response.status_code, 201) # Cambiar a 201
+        self.assertEqual(response.status_code, 201) # Cambiar a  201
         self.assertIn(f'Email {unique_email} added to blacklist', response.json['message'])
 
     def test_get_check_email_in_blacklist(self):
